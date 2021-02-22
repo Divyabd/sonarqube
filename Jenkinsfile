@@ -15,44 +15,21 @@ pipeline{
       steps{
          sh 'echo $JOB_NAME'
         sh 'echo $BUILD_NUMBER'
-        echo 'Maven Vaersion'
-        sh 'mvn -version'
+       
        
       }
      }
-    stage('Clean'){
-      steps{
-        echo 'Clean'
-        sh 'mvn clean'
-       
-      }
-     }
-    stage('Compile'){
-      steps{
-        echo 'Compile'
-        sh 'mvn compile'
-        
-      }
-     }
-    stage('package'){
-      steps{
-        echo 'Packing '
-        sh 'mvn -B -DskipTests clean package'
-        
-      }
-     }
-    stage('Test'){
-      steps{
-        echo 'Maven test'
-        sh 'mvn test'
-      }
-      
-  }
-    
-    stage('build && SonarQube analysis') {
+   
+  
+ stage("build & SonarQube analysis") {
+            agent any
             steps {
-             sh 'mvn verify sonar:sonar'
+              withSonarQubeEnv('sample') {
+                sh 'mvn clean package sonar:sonar'
+              }
             }
-    }
+          }
+    
+  
   }
 }
